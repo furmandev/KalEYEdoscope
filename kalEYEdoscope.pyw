@@ -1,3 +1,4 @@
+import math
 import operator
 import os
 import random
@@ -109,7 +110,7 @@ data = yaml.safe_load(open("data/data"))
 
 # Fonts
 font_title = pygame.font.Font(None, 22)
-font_subtitle = pygame.font.Font(None, 12)
+font_subtitle = pygame.font.Font(None, 16)
 font_normal = pygame.font.Font(None, 22)
 
 # Spacings
@@ -190,18 +191,76 @@ def baseline():
             update()
 
 
+def display_circle(angle, theta, r, circle_num):
+    """
+    Displays a circle for half a second, then prompts the user to answer whether the circle is distorted.
+    :param angle: angle of the circle
+    :param theta: theta for the circle
+    :param r: circle radius
+    :param circle_num: current test number
+    :return: user's selection
+    """
+    tan = math.tan(math.radians(angle))
+    if tan != 0:
+        slope = 1 / tan
+    else:
+        slope = 99999
+    b = random.randint(5, 8)
+    phi = random.random() * 2 * np.pi
+    distortions = [r / (slope * 4), r / (slope * 5), r / (slope * 6), r / (slope * 7)]
+    rho = r + distortions[b - 5] * sin(b * (theta + phi))
+    plt.polar(theta, rho, linewidth=10, color='grey')
+    ax = plt.gca()
+    ax.grid(False)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    ax.spines['polar'].set_visible(False)
+    plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 5), transparent=True)
+    plt.close(plt.gcf())
+    circle = pygame.image.load("images/current_circle.png")
+    clear_screen()
+    if circle_num < 0:
+        text = font_subtitle.render("sanity check", True, color_gray)
+    else:
+        text = font_subtitle.render("%d" % circle_num, True, color_gray)
+    game.screen.blit(text, (game.w - text.get_width() - padding, padding))
+    game.screen.blit(circle, (game.w // 2 - circle.get_width() // 2,
+                              game.h // 2 - circle.get_height() // 2))
+    update()
+    pygame.time.delay(500)
+    clear_screen()
+    game.screen.blit(text, (game.w - text.get_width() - padding, padding))
+    update_buttons("Yes", "No", "Distorted?")
+    update()
+
+    running = True
+    choice = "error"
+    while running:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                sys.exit()
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_r:
+                    # normal
+                    choice = "n"
+                    running = False
+                elif e.key == pygame.K_l:
+                    # distorted
+                    choice = "y"
+                    running = False
+            update()
+
+    return choice
+
+
 def test():
     """
     Test event
     """
+    # Pick eye
     clear_screen()
     update_buttons("Left", "Right", "Select an eye", "to test.")
     update()
-
-    testnum = str(data["number_of_tests"] + 1)
-    data["tests"][testnum] = {}
-    data["number_of_tests"] = data["number_of_tests"] + 1
-
     eye = "Error"
     running = True
     while running:
@@ -216,59 +275,72 @@ def test():
                     eye = "R"
                     running = False
             update()
+
+    # Read user data
+    testnum = str(data["number_of_tests"] + 1)
+    data["tests"][testnum] = {}
+    data["number_of_tests"] = data["number_of_tests"] + 1
     data["tests"][testnum]["eye"] = eye
-    normal_circle_indexes = [random.randint(0, 9), random.randint(0, 9), random.randint(0, 9)]
-    distortions = list(range(1, 11))
-    random.shuffle(distortions)
-    for loop in range(10):
-        if loop in normal_circle_indexes:
-            distortion = 1
+
+    # Calculate Circle Parameters
+    upper_threshold = [15]
+    lower_threshold = [0]
+    current_test = 0
+    threshold_difference = 1
+    convergence = 0.372
+    theta = np.arange(0, 4 * np.pi, 0.01)[1:]
+    r = random.randint(2, 5)
+    incorrect_sanity_checks = 0
+    num_sanity_checks = 0
+    while threshold_difference >= 0.5:
+        current_big_t = upper_threshold[current_test]
+        current_small_t = lower_threshold[current_test]
+        threshold_difference = abs(current_big_t - current_small_t)
+        if random.randint(0, 100) <= 75 or current_test == 0:
+            # Normal Test
+            angle = current_big_t - convergence * threshold_difference
+            choice = display_circle(angle, theta, r, current_test + 1)
+            if choice == "y":
+                upper_threshold.append(angle)
+            else:
+                upper_threshold.append(
+                    (current_big_t + min(np.median(upper_threshold), np.mean(upper_threshold))) / 2
+                )
+            angle = current_small_t + convergence * abs(upper_threshold[current_test + 1] - current_small_t)
+            choice = display_circle(angle, theta, r, current_test + 1)
+            if choice == "y":
+                lower_threshold.append(
+                    (current_small_t + min(np.median(lower_threshold), np.mean(lower_threshold))) / 2
+                )
+            else:
+                lower_threshold.append(angle)
         else:
-            distortion = distortions[loop]
+            # Sanity Check Test
+            num_sanity_checks += 1
+            angle = random.choice([current_big_t, current_small_t])
+            choice = display_circle(angle, theta, r, -1)
+            if choice == "y":
+                upper_threshold.append(current_big_t)
+                if angle == current_small_t:
+                    lower_threshold.append(lower_threshold[current_test - 1])
+                    incorrect_sanity_checks += 1
+                else:
+                    lower_threshold.append(current_small_t)
+            elif choice == "n":
+                lower_threshold.append(current_small_t)
+                if angle == current_small_t:
+                    upper_threshold.append(upper_threshold[current_test - 1])
+                    incorrect_sanity_checks += 1
+                else:
+                    upper_threshold.append(current_big_t)
 
-        theta = np.arange(0, 4 * np.pi, 0.01)[1:]
-        rho = 5 + 0.05 * sin(distortion * theta)
-        plt.polar(theta, rho, linewidth=7, color='grey')
-        ax = plt.gca()
-        ax.grid(False)
-        ax.set_yticklabels([])
-        ax.set_xticklabels([])
-        ax.spines['polar'].set_visible(False)
-        plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 5), transparent=True)
-        plt.close(plt.gcf())
-        circle = pygame.image.load("images/current_circle.png")
+        current_test += 1
 
-        clear_screen()
-        circle_num = loop + 1
-        text = font_subtitle.render("%d/10" % circle_num, True, color_black)
-        game.screen.blit(text, (game.w - text.get_width() - padding, padding))
-        game.screen.blit(circle, (game.w // 2 - circle.get_width() // 2,
-                                  game.h // 2 - circle.get_height() // 2))
-        update()
-        pygame.time.delay(500)
-        clear_screen()
-        game.screen.blit(text, (game.w - text.get_width() - padding, padding))
-        update_buttons("Distorted", "Normal")
-        update()
-
-        running = True
-        choice = "error"
-        while running:
-            for e in pygame.event.get():
-                if e.type == pygame.QUIT:
-                    sys.exit()
-                if e.type == pygame.KEYDOWN:
-                    if e.key == pygame.K_r:
-                        # normal
-                        choice = "normal"
-                        running = False
-                    elif e.key == pygame.K_l:
-                        # distorted
-                        choice = "distorted"
-                        running = False
-                update()
-        data["tests"][testnum][loop] = {"distortion_level": distortion, "answer": choice}
-        update_data()
+    data["tests"][testnum]["lower_thresholds"] = [float(x) for x in lower_threshold]
+    data["tests"][testnum]["upper_thresholds"] = [float(x) for x in upper_threshold]
+    data["tests"][testnum]["check_sanity_num"] = num_sanity_checks
+    data["tests"][testnum]["incorrect_sanity_checks"] = incorrect_sanity_checks
+    update_data()
 
     clear_screen()
     update_buttons("Start Menu", "Start Menu", "Test Completed")

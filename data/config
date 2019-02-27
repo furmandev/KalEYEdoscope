@@ -1,5 +1,0 @@
-eye: [R, L, R, R, R, R, R]
-init: nothing
-passed: [0, 1, 1, 0, 1, 0, 0]
-scores: [-300, -180, -270, -230, 100, -160, -200]
-user: []

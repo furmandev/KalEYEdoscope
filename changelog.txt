@@ -1,0 +1,19 @@
+Version 2.0:
+
+General GUI:
+* Re-sized program to 128x128
+* Reformatted button select
+* Changed background to grey
+* Title fade in
+* Enlarge text
+
+Testing:
+* answer after picture shown for 0.5 seconds
+* removed circle background
+* better circles (thiccer and smoother)
+* shows current circle out of ten
+* after testing, display test complete (removed profile)
+
+Data:
+* data is constantly exported to file in data/data
+

@@ -207,15 +207,16 @@ def display_circle(angle, theta, r, circle_num):
         slope = 99999
     b = random.randint(5, 8)
     phi = random.random() * 2 * np.pi
-    distortions = [r / (slope * 4), r / (slope * 5), r / (slope * 6), r / (slope * 7)]
+    distortions = [r / (slope * 5), r / (slope * 6), r / (slope * 7), r / (slope * 8)]
     rho = r + distortions[b - 5] * sin(b * (theta + phi))
-    plt.polar(theta, rho, linewidth=10, color='grey')
+    plt.polar(theta, rho, linewidth=2, color='black')
     ax = plt.gca()
     ax.grid(False)
+    ax.set_rmax(6)
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     ax.spines['polar'].set_visible(False)
-    plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 5), transparent=True)
+    plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 4.5), transparent=True)
     plt.close(plt.gcf())
     circle = pygame.image.load("images/current_circle.png")
     clear_screen()
@@ -286,16 +287,16 @@ def test():
     upper_threshold = [15]
     lower_threshold = [0]
     current_test = 0
-    threshold_difference = 1
+    threshold_difference = 15
     convergence = 0.372
     theta = np.arange(0, 4 * np.pi, 0.01)[1:]
-    r = random.randint(2, 5)
+    r = random.randint(3, 5)
     incorrect_sanity_checks = 0
     num_sanity_checks = 0
     while threshold_difference >= 0.5:
         current_big_t = upper_threshold[current_test]
         current_small_t = lower_threshold[current_test]
-        threshold_difference = abs(current_big_t - current_small_t)
+        # threshold_difference = abs(current_big_t - current_small_t)
         if random.randint(0, 100) <= 75 or current_test == 0:
             # Normal Test
             angle = current_big_t - convergence * threshold_difference
@@ -335,6 +336,9 @@ def test():
                     upper_threshold.append(current_big_t)
 
         current_test += 1
+        current_big_t = upper_threshold[current_test]
+        current_small_t = lower_threshold[current_test]
+        threshold_difference = abs(current_big_t - current_small_t)
 
     data["tests"][testnum]["lower_thresholds"] = [float(x) for x in lower_threshold]
     data["tests"][testnum]["upper_thresholds"] = [float(x) for x in upper_threshold]

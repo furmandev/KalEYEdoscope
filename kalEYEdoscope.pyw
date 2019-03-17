@@ -101,7 +101,7 @@ class Game:
 
 # Centers window on screen
 
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+os.environ["SDL_FBDEV"] = "/dev/fb1"
 
 # Load frequently used variables
 

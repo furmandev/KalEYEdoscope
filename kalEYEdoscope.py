@@ -99,9 +99,9 @@ class Game:
 
 # INITIALIZATION
 
-# Centers window on screen
+# Display screen on OLED128
 
-os.environ['SDL_VIDEO_CENTERED'] = '1'
+os.environ["SDL_FBDEV"] = "/dev/fb1"
 
 # Load frequently used variables
 

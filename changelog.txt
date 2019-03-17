@@ -1,3 +1,11 @@
+Version 2.2:
+
+* Incorporated bugfixes made by team (v2.1, see 3/13/19 notes))
+* Removed code that centered program on screen
+* Added code to display on correct screen
+
+-------------------------------------------------------
+
 Version 2.0:
 
 General GUI:
@@ -16,4 +24,14 @@ Testing:
 
 Data:
 * data is constantly exported to file in data/data
+
+3/3/19
+*bugfix for "distortions" in display.circle—Matlab code had an off by one error.
+*Changed the line width to 2
+*changed the color from grey to black
+*added "ax.set_rmax(6)" to display.circle, same function as rlim([0 6]) in Matlab code
+*changed initial threshold_difference to 15, and moved "threshold_difference = abs..." to the end
+of the while loop. Small bugfix, but means that the program terminates when it should instead of
+one iteration later.
+
 

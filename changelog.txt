@@ -1,3 +1,12 @@
+Version 3.0:
+
+* Support for display and custom driver
+* Removed circle number/sanity check indicator (not enough space)
+* Title no longer fades in (is complicated in new driver - will look into more later)
+
+
+-------------------------------------------------------
+
 Version 2.2:
 
 * Incorporated bugfixes made by team (v2.1, see 3/13/19 notes))

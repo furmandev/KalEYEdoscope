@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yaml
 from pylab import sin
-
 import RPi.GPIO as GPIO
 import OLED_Driver as OLED
 import Image
@@ -87,14 +86,14 @@ def update_buttons(update_draw, left, right, title=None, subtitle=None):
 
     update_draw.rectangle([(WIDTH // 2 - right_text[0] // 2 - padding, HEIGHT // 2),
                            (WIDTH // 2 + right_text[0] // 2 + padding, HEIGHT // 2 + right_text[1] + padding)],
-                          fill="GREEN")
+                          fill="BLUE")
 
     update_draw.rectangle([(WIDTH // 2 - left_text[0] // 2 - padding, HEIGHT * 3 // 4),
                            (WIDTH // 2 + left_text[0] // 2 + padding, HEIGHT * 3 // 4 + left_text[1] + padding)],
-                          fill="RED")
+                          fill="DARKORANGE")
 
-    update_draw.text((WIDTH // 2 - right_text[0] // 2, HEIGHT // 2), right, font=font_normal, fill="BLACK")
-    update_draw.text((WIDTH // 2 - left_text[0] // 2, HEIGHT * 3 // 4), left, font=font_normal, fill="BLACK")
+    update_draw.text((WIDTH // 2 - right_text[0] // 2, HEIGHT // 2), right, font=font_normal)
+    update_draw.text((WIDTH // 2 - left_text[0] // 2, HEIGHT * 3 // 4), left, font=font_normal)
 
     if title:
         title_text = update_draw.textsize(title, font_subtitle)

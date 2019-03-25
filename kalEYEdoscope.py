@@ -39,8 +39,10 @@ def get_input():
                     program_quit()
                 OLED.Delay(1000)
                 quit_count += 1
-            if GPIO.input(BUTTON1) == GPIO.HIGH: return 1
-            if GPIO.input(BUTTON2) == GPIO.HIGH: return 2
+            elif GPIO.input(BUTTON1) == GPIO.HIGH:
+                return 1
+            elif GPIO.input(BUTTON2) == GPIO.HIGH:
+                return 2
     elif INTYPE == "KEYBOARD":
         while True:
             i = raw_input("input: ")

@@ -273,11 +273,11 @@ def test():
     r = random.randint(3, 5)
     incorrect_sanity_checks = 0
     num_sanity_checks = 0
-    while threshold_difference >= 0.5:
+    while threshold_difference >= 0.75:
         current_big_t = upper_threshold[current_test]
         current_small_t = lower_threshold[current_test]
         # threshold_difference = abs(current_big_t - current_small_t)
-        if random.randint(0, 100) <= 75 or current_test == 0:
+        if random.randint(0, 100) <= 85 or current_test == 0:
             # Normal Test
             angle = current_big_t - convergence * threshold_difference
             choice = display_circle(angle, theta, r)

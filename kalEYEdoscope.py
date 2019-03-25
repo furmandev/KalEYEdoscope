@@ -206,20 +206,20 @@ def display_circle(angle, theta, r):
     phi = random.random() * 2 * np.pi
     distortions = [r / (slope * 5), r / (slope * 6), r / (slope * 7), r / (slope * 8)]
     rho = r + distortions[b - 5] * sin(b * (theta + phi))
-    plt.polar(theta, rho, linewidth=2, color='black')
+    plt.polar(theta, rho, linewidth=2, color='w')
     ax = plt.gca()
     ax.grid(False)
     ax.set_rmax(6)
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     ax.spines['polar'].set_visible(False)
-    plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 4), transparent=True)
+    plt.gcf().savefig('images/current_circle.png', bbox_inches='tight', dpi=(WIDTH // 4), transparent=True,
+                      facecolor='k')
     plt.close(plt.gcf())
 
-    circle_image = Image.open("images/current_circle.png")
-    draw, image = clear_screen()
-    image.paste(circle_image, (0, 0))
-    update(image)
+    circle_image = Image.open("images/current_circle.png", mode='r')
+    OLED.Clear_Screen()
+    update(circle_image)
     OLED.Delay(500)
     draw, image = clear_screen()
     button = update_buttons(draw, image, "No", "Yes", "Distorted?")

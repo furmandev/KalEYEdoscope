@@ -228,11 +228,15 @@ def display_circle(angle, theta, r):
     update(circle_image)
     OLED.Delay(500)
     draw, image = clear_screen()
-    button = update_buttons(draw, image, "No", "Yes", "Distorted?")
+    button = update_buttons(draw, image, "No", "Yes", "Did the circle", "appear normal?")
 
-    choice = "error"
-    if button == 1: choice = "y"
-    if button == 2: choice = "n"
+    # Note that choice returns "y" for a distorted circle and "n" for a normal circle
+    if button == 1:
+        choice = "n"
+    elif button == 2:
+        choice = "y"
+    else:
+        choice = "error"
 
     return choice
 

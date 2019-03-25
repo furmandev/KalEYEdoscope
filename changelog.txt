@@ -1,9 +1,21 @@
+Version 4.01:
+
+* Option colors changed
+* Selected option is outlined
+
+-------------------------------------------------------
+
+Version 4.0:
+
+* Support for buttons
+
+-------------------------------------------------------
+
 Version 3.0:
 
 * Support for display and custom driver
 * Removed circle number/sanity check indicator (not enough space)
 * Title no longer fades in (is complicated in new driver - will look into more later)
-
 
 -------------------------------------------------------
 

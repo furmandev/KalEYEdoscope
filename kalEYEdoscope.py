@@ -28,6 +28,7 @@ BUTTON2 = 15
 
 def get_input():
     while True:
+        if GPIO.input(BUTTON1) == GPIO.HIGH and GPIO.input(BUTTON2) == GPIO.HIGH: program_quit()
         if GPIO.input(BUTTON1) == GPIO.HIGH: return 1
         if GPIO.input(BUTTON2) == GPIO.HIGH: return 2
 
@@ -300,6 +301,11 @@ def test():
     state = "Start"
 
 
+def program_quit():
+    OLED.Clear_Screen()
+    GPIO.cleanup()
+    exit()
+
 # def profile():
 #     """
 #     View profile event
@@ -391,9 +397,7 @@ while True:
     #     advanced()
 
     elif state == "Quit":
-        OLED.Clear_Screen()
-        GPIO.cleanup()
-        exit()
+        program_quit()
 
     else:
         print(state)

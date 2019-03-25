@@ -1,10 +1,5 @@
 # -*- coding:UTF-8 -*-
 
-import spidev
-
-import RPi.GPIO as GPIO
-
-import time
 import time
 
 import RPi.GPIO as GPIO

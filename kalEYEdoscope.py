@@ -20,21 +20,16 @@ import ImageFont
 NUMCIRCLES = 10
 WIDTH = 128
 HEIGHT = 128
+BUTTON1 = 14
+BUTTON2 = 15
 
 
 # DEFINE CONSTANT FUNCTIONS
 
 def get_input():
     while True:
-        i = raw_input("input: ")
-        if i == "1": return 1
-        if i == "2": return 2
-        if i == "clear":
-            data["new_user"] = True
-            update_data()
-            exit()
-        else:
-            print("please enter 1 or 2.\n\n")
+        if GPIO.input(BUTTON1) == GPIO.HIGH: return 1
+        if GPIO.input(BUTTON2) == GPIO.HIGH: return 2
 
 
 def clear_screen():
@@ -98,6 +93,11 @@ def update_buttons(update_draw, left, right, title=None, subtitle=None):
 # Start display
 
 OLED.Device_Init()
+
+# Initialize buttons
+
+GPIO.setup(BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 # Load frequently used variables
 

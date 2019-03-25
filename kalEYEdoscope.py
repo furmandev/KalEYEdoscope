@@ -218,6 +218,12 @@ def display_circle(angle, theta, r):
     plt.close(plt.gcf())
 
     circle_image = Image.open("images/current_circle.png", mode='r')
+    draw = ImageDraw.Draw(circle_image)
+
+    # Center cross hair
+    draw.line((WIDTH // 2, HEIGHT // 2 - 2, WIDTH // 2, HEIGHT // 2 + 2))
+    draw.line((WIDTH // 2 - 2, HEIGHT // 2, WIDTH // 2 + 2, HEIGHT // 2))
+
     OLED.Clear_Screen()
     update(circle_image)
     OLED.Delay(500)
@@ -325,6 +331,7 @@ def program_quit():
     OLED.Clear_Screen()
     GPIO.cleanup()
     exit()
+
 
 # def profile():
 #     """

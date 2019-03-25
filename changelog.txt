@@ -3,6 +3,7 @@ Version 4.01:
 * Option colors changed
 * Selected option is outlined
 * Circle color white, background black
+* Added crosshair in center of circle
 
 -------------------------------------------------------
 

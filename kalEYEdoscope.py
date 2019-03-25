@@ -1,5 +1,6 @@
 import math
 import random
+import sys
 
 import matplotlib
 
@@ -22,15 +23,31 @@ WIDTH = 128
 HEIGHT = 128
 BUTTON1 = 14
 BUTTON2 = 15
+INTYPE = "BUTTON"
+if len(sys.argv > 1):
+    if sys.argv[1] == "-k":
+        INTYPE = "KEYBOARD"
 
 
 # DEFINE CONSTANT FUNCTIONS
 
 def get_input():
-    while True:
-        if GPIO.input(BUTTON1) == GPIO.HIGH and GPIO.input(BUTTON2) == GPIO.HIGH: program_quit()
-        if GPIO.input(BUTTON1) == GPIO.HIGH: return 1
-        if GPIO.input(BUTTON2) == GPIO.HIGH: return 2
+    quit_count = 0
+    if INTYPE == "BUTTON":
+        while True:
+            if GPIO.input(BUTTON1) == GPIO.HIGH and GPIO.input(BUTTON2) == GPIO.HIGH:
+                if quit_count == 2:
+                    program_quit()
+                OLED.Delay(1000)
+                quit_count += 1
+            if GPIO.input(BUTTON1) == GPIO.HIGH: return 1
+            if GPIO.input(BUTTON2) == GPIO.HIGH: return 2
+    elif INTYPE == "KEYBOARD":
+        while True:
+            i = raw_input("input: ")
+            if i == "12": program_quit()
+            if i == "1": return 1
+            if i == "2": return 2
 
 
 def clear_screen():

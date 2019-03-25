@@ -71,9 +71,10 @@ def update_data():
         yaml.dump(data, save_data)
 
 
-def update_buttons(update_draw, left, right, title=None, subtitle=None):
+def update_buttons(update_draw, update_image, left, right, title=None, subtitle=None):
     """
     Updates the text displayed for each button instruction
+    :param update_image:
     :param update_draw:
     :param subtitle: text to be displayed just below title
     :param title: text to be displayed above option buttons
@@ -103,6 +104,21 @@ def update_buttons(update_draw, left, right, title=None, subtitle=None):
         subtitle_text = update_draw.textsize(subtitle, font_subtitle)
         update_draw.text((WIDTH // 2 - subtitle_text[0] // 2, subtitle_text[1] + padding * 2), subtitle,
                          font=font_subtitle)
+
+    update(update_image)
+    button = get_input()
+    if button == 1:
+        update_draw.rectangle([(WIDTH // 2 - right_text[0] // 2 - padding, HEIGHT // 2),
+                               (WIDTH // 2 + right_text[0] // 2 + padding, HEIGHT // 2 + right_text[1] + padding)],
+                              outline="BLACK")
+        update(update_image)
+        return 1
+    if button == 2:
+        update_draw.rectangle([(WIDTH // 2 - left_text[0] // 2 - padding, HEIGHT * 3 // 4),
+                               (WIDTH // 2 + left_text[0] // 2 + padding, HEIGHT * 3 // 4 + left_text[1] + padding)],
+                              outline="BLACK")
+        update(update_image)
+        return 2
 
 
 # INITIALIZATION
@@ -145,10 +161,7 @@ def start():
     draw.text((WIDTH // 2 - welcome_text[0] // 2, welcome_text[1]), welcome, font=font_subtitle, fill="BLACK")
     draw.text((WIDTH // 2 - title_text[0] // 2, welcome_text[1] * 2 + padding), title, font=font_subtitle, fill="BLACK")
 
-    update_buttons(draw, "Exit", "Start")
-    update(image)
-
-    button = get_input()
+    button = update_buttons(draw, image, "Exit", "Start")
 
     if button == 1:
         if data["new_user"]:
@@ -156,8 +169,8 @@ def start():
         else:
             state = "Test"
 
-    elif button == 2:
-        state = "Quit"
+    else:
+        program_quit()
 
 
 def baseline():
@@ -172,9 +185,7 @@ def baseline():
     data["number_of_tests"] = -1
     update_data()
 
-    update_buttons(draw, "Start", "Start", "Record a ", "baseline.")
-    update(image)
-    get_input()
+    update_buttons(draw, image, "Start", "Start", "Record a ", "baseline.")
     state = "Test"
 
 
@@ -211,11 +222,9 @@ def display_circle(angle, theta, r):
     update(image)
     OLED.Delay(500)
     draw, image = clear_screen()
-    update_buttons(draw, "No", "Yes", "Distorted?")
-    update(image)
+    button = update_buttons(draw, image, "No", "Yes", "Distorted?")
 
     choice = "error"
-    button = get_input()
     if button == 1: choice = "y"
     if button == 2: choice = "n"
 
@@ -230,11 +239,9 @@ def test():
 
     # Pick eye
     draw, image = clear_screen()
-    update_buttons(draw, "Left", "Right", "Select an eye", "to test.")
-    update(image)
+    button = update_buttons(draw, image, "Left", "Right", "Select an eye", "to test.")
     eye = "Error"
 
-    button = get_input()
     if button == 1:
         eye = "L"
     elif button == 2:
@@ -310,10 +317,7 @@ def test():
     update_data()
 
     draw, image = clear_screen()
-    update_buttons(draw, "Start Menu", "Start Menu", "Test Completed")
-    update(image)
-
-    get_input()
+    update_buttons(draw, image, "Start Menu", "Start Menu", "Test Completed")
     state = "Start"
 
 

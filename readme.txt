@@ -16,10 +16,12 @@ Dependencies list:
 	* yaml
 	* pylab
 	* scipy
-Dependecies for OLED display
+	
+Dependecies for OLED display:
 	* RPi.GPIO
 	* OLED_Driver (included in this repo)
 	* PIL (pillow)
+	
 Dependencies for regular display: 
 	* pygame
 	* os

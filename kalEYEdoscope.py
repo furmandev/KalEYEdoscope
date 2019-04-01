@@ -22,8 +22,6 @@ DISPLAYTYPE = "OLED"
 
 # Interpret command-line arguments
 if len(sys.argv) > 1:
-    if "-k" in sys.argv:
-        INTYPE = "KEYBOARD"
     if "-d" in sys.argv:
         DISPLAYTYPE = "HDMI"
         WIDTH = 384
@@ -39,6 +37,11 @@ if len(sys.argv) > 1:
         import ImageFont
     if "-c" in sys.argv:
         INTYPE = "SHELL"
+    if "-k" in sys.argv:
+        if DISPLAYTYPE == "OLED":
+            print("Error, keyboard must be used with default computer display")
+            exit(1)
+        INTYPE = "KEYBOARD"
 
 
 # DEFINE CONSTANT FUNCTIONS
